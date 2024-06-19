@@ -9,9 +9,7 @@
                             <v-text-field v-model="username" label="Username" outlined required></v-text-field>
                             <v-text-field v-model="password" label="Password" outlined required
                                 type="password"></v-text-field>
-                            <router-link to="/overview">
-                                <v-btn class="color white-text" dark block type="submit">Sign In</v-btn>
-                            </router-link>
+                            <v-btn class="color white-text" dark block type="submit">Sign In</v-btn>
                         </v-form>
                     </v-card>
                 </v-card>
@@ -33,6 +31,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
     data() {
         return {
@@ -41,8 +41,38 @@ export default {
         }
     },
     methods: {
-        login() {
-            
+        async login() {
+            try {
+                // Make a POST request to your login endpoint
+                const response = await axios.post('http://10.1.55.230:7777/user/login', {
+                    username: this.username,
+                    password: this.password
+                });
+
+                console.log(response.data);
+
+                this.$router.push('/overview');
+            } catch (error) {
+                if (error.response) {
+                    if (error.response.status === 404) {
+                        alert('Wrong Username');
+                    } else if (error.response.status === 500) {
+                        alert('Internal Server Error');
+                    } else if (error.response.status === 401) {
+                        alert('Wrong Password');
+                    } else {
+                        alert(`Error: ${error.response.status}`);
+                    }
+                } else if (error.request) {
+                    // The request was made but no response was received
+                    console.error('No response received:', error.request);
+                    alert('No response from server. Please try again later.');
+                } else {
+                    // Something happened in setting up the request that triggered an Error
+                    console.error('Error during login:', error.message);
+                    alert('An error occurred. Please try again.');
+                }
+            }
         }
     }
 }

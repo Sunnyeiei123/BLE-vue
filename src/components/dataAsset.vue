@@ -2,13 +2,20 @@
     <v-container>
         <v-row>
             <v-col cols="8" style="margin-top: 2rem; margin-left: 14rem;">
-                <v-data-table :headers="headers" :items="items" item-key="name" items-per-page="5"></v-data-table>
+                <v-data-table :headers="headers" :items="items" item-key="name" items-per-page="5">
+                    <template v-slot:[`item.Edit`]="{ item }">
+                        <v-btn class="color white-text" style="margin-right: 1rem;" @click="updateItem(item)">Update</v-btn>
+                        <v-btn color="red" class="white-text" @click="deleteItem(item)">Delete</v-btn>
+                    </template>
+                </v-data-table>
             </v-col>
         </v-row>
     </v-container>
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
     data() {
         return {
@@ -19,52 +26,43 @@ export default {
                     align: 'center',
                     class: 'custom-title',
                     children: [
-                        { title: 'Room', value: 'Room' },
-                        { title: 'Build', value: 'Build' },
-                        { title: 'Status', value: 'Status' },
+                        { title: 'Mac', value: 'Mac' },
+                        { title: 'Description', value: 'Description' },
+                        { title: 'Update & Delete', value: 'Edit' },
                     ],
                 },
             ],
-            items: [
-                {
-                    name: 'เตียงนอน',
-                    location: 'Egypt',
-                    Room: '1',
-                    Build: 'A',
-                    Status: 'Active',
-                },
-                {
-                    name: 'ตู่เย็น',
-                    location: 'Egypt',
-                    Room: '2',
-                    Build: 'A',
-                    Status: 'Active',
-                },
-                {
-                    name: 'ไม้เท้า',
-                    location: 'Egypt',
-                    Room: '104',
-                    Build: 'A',
-                    Status: 'Active',
-
-                },
-                {
-                    name: 'เข็มฉีดตูด',
-                    location: 'Egypt',
-                    Room: '101',
-                    Build: 'A',
-                    Status: 'Active',
-                },
-                {
-                    name: 'ยาบ้า',
-                    location: 'Mexico',
-                    Room: '65',
-                    Build: 'A',
-                    Status: 'Active',
-                },
-            ],
+            items: [],
         };
     },
+    mounted() {
+        this.fetchData();
+    },
+    methods: {
+        async fetchData() {
+            try {
+                const response = await axios.get('http://10.1.55.230:7777/tags/gets');
+                const data = response.data;
+
+                this.items = data.map(item => ({
+                    name: item.assetName,  
+                    Mac: item.tagMac,
+                    Description: item.Description,  
+                    Edit: null  // This will be replaced by the slot content
+                }));
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        },
+        updateItem(item) {
+            // Logic for updating the item
+            console.log('Update item:', item);
+        },
+        deleteItem(item) {
+            // Logic for deleting the item
+            console.log('Delete item:', item);
+        }
+    }
 };
 </script>
 
@@ -72,5 +70,11 @@ export default {
 .custom-title .v-data-table-header {
     padding-left: 20px;
     /* Adjust the padding to move the title to the left */
+}
+.color {
+  background-color: rgb(32, 42, 62);
+}
+.white-text {
+  color: white;
 }
 </style>
