@@ -4,15 +4,13 @@
       <v-app-bar-nav-icon color="white" @click="drawer = !drawer" style="font-size: 24px;"></v-app-bar-nav-icon>
       <v-toolbar-title class="white-text">BLE test</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-span text class="white-text" style="padding: 1rem;">HI, I', Bunkki</v-span>
+      <v-span text class="white-text" style="padding: 1rem;">HI, I'm {{ username }}</v-span>
       <v-avatar style="margin-right: 1rem">
         <v-img alt="John" src="../components/img/3541871.png"></v-img>
       </v-avatar>
     </v-app-bar>
-
     <v-navigation-drawer class="sidecolor" v-model="drawer" app>
       <v-list>
-        <!-- Dashboard section -->
         <v-list-item>
           <v-list-item-content>
             <v-list-item-title class="dashboard-title" @click="toggleSubmenu('Dashboard')">
@@ -29,7 +27,6 @@
           </template>
         </v-list-item>
 
-        <!-- Map section -->
         <v-list-item>
           <v-list-item-content>
             <v-list-item-title class="map-title" @click="toggleSubmenu('Map')">
@@ -47,7 +44,6 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-
     <v-main>
       <router-view></router-view>
     </v-main>
@@ -55,7 +51,8 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
 import router from '../router';
 
 export default {
@@ -64,6 +61,7 @@ export default {
     const selectedSubmenu = ref(null);
     const dashboardSubitems = ['Overview', 'Error Log'];
     const mapSubitems = ['List Asset'];
+    const username = ref('');
 
     const toggleSubmenu = (menu) => {
       selectedSubmenu.value = (selectedSubmenu.value === menu) ? null : menu;
@@ -79,7 +77,34 @@ export default {
       router.push(routeMap[subItem]);
     };
 
-    return { drawer, selectedSubmenu, dashboardSubitems, mapSubitems, toggleSubmenu, goToRoute };
+    const fetchUsernameById = async (id) => {
+      try {
+        const response = await axios.get(`http://10.1.55.230:7777/user/gets/${id}`);
+        username.value = response.data.username;
+      } catch (error) {
+        console.error('Failed to fetch username:', error);
+
+        if (error.response) {
+          console.error(`API Response Error: ${error.response.status} - ${JSON.stringify(error.response.data)}`);
+        } else if (error.request) {
+          console.error('No response received from API:', error.request);
+        } else {
+          console.error('Error setting up API request:', error.message);
+        }
+      }
+    };
+
+    onMounted(() => {
+      const userId = localStorage.getItem('userId');
+      if (userId) {
+        console.log('Fetched User ID from localStorage:', userId);
+        fetchUsernameById(userId);
+      } else {
+        console.error('No user ID found, user may not be logged in');
+      }
+    });
+
+    return { drawer, selectedSubmenu, dashboardSubitems, mapSubitems, toggleSubmenu, goToRoute, username };
   },
   router
 };
