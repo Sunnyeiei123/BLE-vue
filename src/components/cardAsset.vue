@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="d-flex justify-space-around">
-            <v-card class="custom-card" style="width: 400px; margin-top: 10rem; margin-left: 20rem">
+            <v-card class="custom-card" style="width: 400px; margin-top: 10rem; margin-left: 8rem">
                 <v-card-title class="headline grey lighten-2">
                     Asset Use
                 </v-card-title>
@@ -12,7 +12,7 @@
                 </v-card-text>
             </v-card>
 
-            <v-card class="custom-card" style="width: 400px; margin-top: 10rem; margin-left: 5rem">
+            <v-card class="custom-card" style="width: 400px; margin-top: 10rem; margin-left: 2rem">
                 <v-card-title class="headline grey lighten-2">
                     Asset Un Use
                 </v-card-title>
@@ -23,7 +23,7 @@
                 </v-card-text>
             </v-card>
 
-            <v-card class="custom-card" style="width: 400px; margin-top: 10rem; margin-left: 5rem">
+            <v-card class="custom-card" style="width: 400px; margin-top: 10rem; margin-left: 2rem">
                 <v-card-title class="headline grey lighten-2">
                     Asset Error/Lost Signal
                 </v-card-title>
@@ -34,8 +34,10 @@
                 </v-card-text>
             </v-card>
         </div>
-        <v-img :src="require('../components/img/logo_mfuwebtypo3_09052018-02.png')" height="500" width="800"
-            style="margin-left: 34rem;" />
+        <hr style="margin-top: 2.5rem; border: 1px solid; ">
+        <div class="d-flex">
+            <v-img :src="require('../assets/Screenshot 2024-06-21 135052.png')" height="800" width="1000" />
+        </div>
     </div>
 
 </template>
@@ -72,13 +74,16 @@ export default {
 .custom-card {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
 }
-.green-text{
+
+.green-text {
     color: green;
 }
-.red-text{
+
+.red-text {
     color: red;
 }
-.yellow-text{
+
+.yellow-text {
     color: orange;
 }
 </style>

@@ -4,43 +4,47 @@
       <v-app-bar-nav-icon color="white" @click="drawer = !drawer" style="font-size: 24px;"></v-app-bar-nav-icon>
       <v-toolbar-title class="white-text">BLE test</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-span text class="white-text" style="padding: 1rem;">HI, I'm {{ username }}</v-span>
+      <v-span text class="white-text" style="padding: 1rem;">HI , {{ username }}</v-span>
       <v-avatar style="margin-right: 1rem">
-        <v-img alt="John" src="../components/img/3541871.png"></v-img>
+        <v-img alt="User" src="../components/img/3541871.png"></v-img>
       </v-avatar>
     </v-app-bar>
     <v-navigation-drawer class="sidecolor" v-model="drawer" app>
       <v-list>
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title class="dashboard-title" @click="toggleSubmenu('Dashboard')">
+            <v-list-item-title class="dashboard-title white-text" @click="toggleSubmenu('Dashboard')">
               Dashboard
-              <v-icon>{{ selectedSubmenu === 'Dashboard' ? 'mdi-minus' : 'mdi-plus' }}</v-icon>
+              <v-icon size="18">{{ selectedSubmenu === 'Dashboard' ? 'mdi-arrow-up' : 'mdi-arrow-down' }}</v-icon>
             </v-list-item-title>
           </v-list-item-content>
-          <template v-if="selectedSubmenu === 'Dashboard'">
-            <v-list-item v-for="subItem in dashboardSubitems" :key="subItem" link @click="goToRoute(subItem)">
-              <v-list-item-content>
-                <v-list-item-title>{{ subItem }}</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </template>
+          <transition name="slide-fade">
+            <div v-if="selectedSubmenu === 'Dashboard'">
+              <v-list-item class="subitem white-text" v-for="subItem in dashboardSubitems" :key="subItem" link @click="goToRoute(subItem)">
+                <v-list-item-content>
+                  <v-list-item-title>{{ subItem }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </div>
+          </transition>
         </v-list-item>
 
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title class="map-title" @click="toggleSubmenu('Map')">
+            <v-list-item-title class="map-title white-text" @click="toggleSubmenu('Map')">
               Manage
-              <v-icon>{{ selectedSubmenu === 'Map' ? 'mdi-minus' : 'mdi-plus' }}</v-icon>
+              <v-icon size="18">{{ selectedSubmenu === 'Map' ? 'mdi-arrow-up' : 'mdi-arrow-down' }}</v-icon>
             </v-list-item-title>
           </v-list-item-content>
-          <template v-if="selectedSubmenu === 'Map'">
-            <v-list-item v-for="subItem in mapSubitems" :key="subItem" link @click="goToRoute(subItem)">
-              <v-list-item-content>
-                <v-list-item-title>{{ subItem }}</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </template>
+          <transition name="slide-fade">
+            <div v-if="selectedSubmenu === 'Map'">
+              <v-list-item class="subitem white-text" v-for="subItem in mapSubitems" :key="subItem" link @click="goToRoute(subItem)">
+                <v-list-item-content>
+                  <v-list-item-title>{{ subItem }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </div>
+          </transition>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
@@ -49,6 +53,7 @@
     </v-main>
   </v-app>
 </template>
+
 
 <script>
 import { ref, onMounted } from 'vue';
@@ -60,8 +65,8 @@ export default {
     const drawer = ref(false);
     const selectedSubmenu = ref(null);
     const dashboardSubitems = ['Overview', 'Error Log'];
-    const mapSubitems = ['List Asset'];
-    const username = ref('');
+    const mapSubitems = ['List Asset', 'Signal Report'];
+    const username = ref(localStorage.getItem('username') || '');
 
     const toggleSubmenu = (menu) => {
       selectedSubmenu.value = (selectedSubmenu.value === menu) ? null : menu;
@@ -70,7 +75,8 @@ export default {
     const routeMap = {
       'Overview': '/overview',
       'Error Log': '/error-log',
-      'List Asset': '/list-asset'
+      'List Asset': '/list-asset',
+      'Signal Report':'/signal'
     };
 
     const goToRoute = (subItem) => {
@@ -79,8 +85,12 @@ export default {
 
     const fetchUsernameById = async (id) => {
       try {
-        const response = await axios.get(`http://10.1.55.230:7777/user/gets/${id}`);
-        username.value = response.data.username;
+        const response = await axios.get(`http://10.1.55.230:7777/user/gets`);
+        const user = response.data.find(user => user._id === id);
+        if (user) {
+          username.value = user.username;
+          localStorage.setItem('username', user.username);
+        }
       } catch (error) {
         console.error('Failed to fetch username:', error);
 
@@ -120,11 +130,43 @@ export default {
 }
 
 .sidecolor {
-  background-color: rgb(155, 164, 181);
+  background-color: #394867;
+  padding-top: 1rem;
 }
 
 .dashboard-title,
 .map-title {
   cursor: pointer;
+  font-weight: bold;
+  font-size: 1.1rem;
+  padding: 0.5rem 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.dashboard-title:hover,
+.map-title:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.subitem {
+  padding-left: 2rem;
+  transition: all 0.3s ease;
+}
+
+.subitem:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding-left: 2.5rem;
+  border-left: 4px solid #fff;
+}
+
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: all 0.3s ease;
+}
+
+.slide-fade-enter,
+.slide-fade-leave-to {
+  opacity: 0;
+  transform: translateX(-10px);
 }
 </style>

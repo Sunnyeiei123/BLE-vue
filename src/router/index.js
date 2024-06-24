@@ -24,6 +24,12 @@ const routes = [
     name: 'list-asset',
 
     component:()=> import('../views/ListAsset.vue')
+  },
+  {
+    path:'/signal',
+    name: 'signal',
+
+    component:()=> import('../views/SIgnalReport.vue')
   }
 ]
 
