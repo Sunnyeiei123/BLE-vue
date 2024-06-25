@@ -39,12 +39,11 @@ export default {
     },
     mounted() {
         this.fetchData();
-        this.startAutoReload();
     },
     methods: {
         async fetchData() {
             try {
-                const response = await axios.get('http://10.1.55.230:7777/current/gets');
+                const response = await axios.get('http://10.1.55.230:7777/history/gets/' + this.$route.query.tagMac);
                 const data = response.data;
 
                 this.items = data.map(item => ({
@@ -58,10 +57,7 @@ export default {
                 console.error('Error fetching data:', error);
             }
         },
-        startAutoReload() {
-            setInterval(this.fetchData, 60000); // Reload data every 1 minute
-        },
-    },
+    }
 };
 </script>
 

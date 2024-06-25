@@ -1,52 +1,63 @@
 <template>
-    <v-container>
-        <v-row>
-            <v-col cols="8" style="margin-top: 2rem; margin-left: 14rem;">
-                <v-data-table :headers="headers" :items="items" item-key="name" items-per-page="5">
-                    <template v-slot:[`item.Edit`]="{ item }">
-                        <v-btn class="color white-text" style="margin-right: 1rem;"
-                            @click="openUpdateForm(item)">Update</v-btn>
-                        <v-btn color="red" class="white-text" @click="deleteItem(item)">Delete</v-btn>
-                    </template>
-                </v-data-table>
-            </v-col>
-        </v-row>
+    <div>
+        <h2 class="text-center" style="margin-top: 5rem;">List of Assets</h2>
+        <v-container>
+            <div style="justify-content: center;">
+                <v-row>
+                    <v-col>
+                        <v-data-table :headers="headers" :items="items" item-key="name" items-per-page="5">
+                            <template v-slot:[`item.Edit`]="{ item }">
+                                <v-btn class="color white-text" style="margin-right: 1rem;"
+                                    @click="openUpdateForm(item)">Update</v-btn>
+                                <v-btn color="red" class="white-text" @click="deleteItem(item)">Delete</v-btn>
+                            </template>
+                            <template v-slot:[`item.View`]="{ item }">
+                                <v-btn class="color white-text" style="margin-right: 1rem;"
+                                    @click="viewEach(item)">View</v-btn>
+                            </template>
+                        </v-data-table>
+                    </v-col>
+                </v-row>
+            </div>
 
-        <!-- Update Form Dialog -->
-        <v-dialog v-model="updateDialog" max-width="600px">
-            <!-- <template v-slot:activator="{ on }"></template> -->
-            <v-card>
-                <v-card-title>
-                    Update Item
-                </v-card-title>
-                <v-card-text>
-                    <v-container>
-                        <v-row>
-                            <v-col cols="12">
-                                <v-text-field v-model="updatedItem.Mac" label="Mac"></v-text-field>
-                            </v-col>
-                            <v-col cols="12">
-                                <v-text-field v-model="updatedItem.name" label="Asset Name"></v-text-field>
-                            </v-col>
-                            <v-col cols="12">
-                                <v-text-field v-model="updatedItem.Description" label="Description"></v-text-field>
-                            </v-col>
-                        </v-row>
-                    </v-container>
-                </v-card-text>
-                <v-card-actions>
-                    <v-btn color="blue darken-1" @click="updateItem">Save</v-btn>
-                    <v-btn @click="closeUpdateForm">Cancel</v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
-    </v-container>
+
+            <!-- Update Form Dialog -->
+            <v-dialog v-model="updateDialog" max-width="600px">
+                <!-- <template v-slot:activator="{ on }"></template> -->
+                <v-card>
+                    <v-card-title>
+                        Update Item
+                    </v-card-title>
+                    <v-card-text>
+                        <v-container>
+                            <v-row>
+                                <v-col cols="12">
+                                    <v-text-field v-model="updatedItem.Mac" label="Mac"></v-text-field>
+                                </v-col>
+                                <v-col cols="12">
+                                    <v-text-field v-model="updatedItem.name" label="Asset Name"></v-text-field>
+                                </v-col>
+                                <v-col cols="12">
+                                    <v-text-field v-model="updatedItem.Description" label="Description"></v-text-field>
+                                </v-col>
+                            </v-row>
+                        </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-btn color="blue darken-1" @click="updateItem">Save</v-btn>
+                        <v-btn @click="closeUpdateForm">Cancel</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </v-container>
+    </div>
 </template>
 
 <script>
 import axios from 'axios';
 
 export default {
+    name: 'list-asset',
     data() {
         return {
             headers: [
@@ -59,6 +70,7 @@ export default {
                         { title: 'Mac', value: 'Mac' },
                         { title: 'Description', value: 'Description' },
                         { title: 'Battery', value: 'Battery' },
+                        { title: 'View', value: 'View' },
                         { title: 'Update & Delete', value: 'Edit' },
                     ],
                 },
@@ -106,7 +118,8 @@ export default {
         async updateItem() {
             try {
                 const response = await axios.patch(`http://10.1.55.230:7777/tags/update/${this.updatedItem.ID}`, {
-                    assetName: this.updatedItem.name // Only update the assetName field
+                    assetName: this.updatedItem.name, // Update the assetName field
+                    description: this.updatedItem.Description // Update the description field
                 });
                 // Check if the response contains the updated item data
                 if (response.data && response.data._id) {
@@ -114,8 +127,9 @@ export default {
                     // Optionally, you can update the item in the table without making another API call
                     const updatedIndex = this.items.findIndex(item => item.ID === this.updatedItem.ID);
                     if (updatedIndex !== -1) {
-                        // Update only the assetName field in the table
+                        // Update both assetName and description fields in the table
                         this.items[updatedIndex].name = response.data.assetName;
+                        this.items[updatedIndex].Description = response.data.description;
                     }
                     // Close the update form dialog
                     this.updateDialog = false;
@@ -146,6 +160,9 @@ export default {
             } else {
                 console.log('Deletion canceled by user.');
             }
+        },
+        async viewEach(item) {
+            this.$router.push({ name: 'signal', query: { tagMac: item.Mac } });
         }
     }
 };
