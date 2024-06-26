@@ -64,8 +64,8 @@ export default {
   setup() {
     const drawer = ref(false);
     const selectedSubmenu = ref(null);
-    const dashboardSubitems = ['Overview', 'Error Log'];
-    const mapSubitems = ['List Asset'];
+    const dashboardSubitems = ['Overview', 'Location'];
+    const mapSubitems = ['Asset'];
     const username = ref(localStorage.getItem('username') || '');
 
     const toggleSubmenu = (menu) => {
@@ -74,8 +74,8 @@ export default {
 
     const routeMap = {
       'Overview': '/overview',
-      'Error Log': '/error-log',
-      'List Asset': '/list-asset',
+      'Location': '/location',
+      'Asset': '/list-asset',
     };
 
     const goToRoute = (subItem) => {

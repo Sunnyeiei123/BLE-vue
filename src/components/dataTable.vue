@@ -1,15 +1,26 @@
 <template>
-    <div>
-        <h2 class="text-center" style="margin-top: 5rem;">List of Assets</h2>
+    <div class="list-asset" style="margin-top: 3rem">
+        <h1 class="text-center" >Asset Location</h1>
         <v-container>
-            <div style="justify-content: center;">
-                <v-row>
-                    <v-col>
-                        <v-data-table :headers="headers" :items="items" item-key="ID" items-per-page="5">
-                        </v-data-table>
-                    </v-col>
-                </v-row>
-            </div>
+            <v-card class="table-card">
+                <v-data-table 
+                    :headers="headers" 
+                    :items="items" 
+                    item-key="ID" 
+                    items-per-page="5"
+                    class="elevation-2"
+                >
+                    <template v-slot:header="{ props: { headers } }">
+                        <thead>
+                            <tr>
+                                <th v-for="header in headers" :key="header.value" class="text-center">
+                                    {{ header.title }}
+                                </th>
+                            </tr>
+                        </thead>
+                    </template>
+                </v-data-table>
+            </v-card>
         </v-container>
     </div>
 </template>
@@ -22,13 +33,13 @@ export default {
     data() {
         return {
             headers: [
-                { title: 'Assets', value: 'name' },
+                { title: 'Mac', value: 'Mac' },
                 {
                     title: 'Information',
                     align: 'center',
                     class: 'custom-title',
                     children: [
-                        { title: 'Mac', value: 'Mac' },
+                        { title: 'Assets', value: 'name' },
                         { title: 'Time', value: 'timeStamp' },
                         { title: 'Location', value: 'location' },
                     ],
@@ -59,27 +70,64 @@ export default {
             }
         },
         startAutoReload() {
-            setInterval(this.fetchData, 60000); // Reload data every 1 minute
+            setInterval(this.fetchData, 30000); // Reload data every 1 minute
         },
     },
 };
 </script>
 
 <style scoped>
+.list-asset {
+    background-color: #F1F6F9; /* Blue Grey 50 */
+    min-height: 100vh;
+    padding: 2rem;
+}
+
+.text-center {
+    margin-bottom: 2rem;
+    color: #263238; /* Blue Grey 900 */
+    font-weight: bold;
+}
+
+.table-card {
+    background-color: #ffffff; /* White */
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(96, 125, 139, 0.3); /* Blue Grey 400 with opacity */
+}
+
+.v-data-table {
+    background-color: transparent !important;
+}
+
+.v-data-table >>> .v-data-table-header {
+    background-color: #455a64 !important /* Blue Grey 700 */
+}
+
+.v-data-table >>> .v-data-table-header th {
+    color: #ffffff !important; /* Changed to white for better contrast */
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+
+.v-data-table >>> tbody tr:nth-of-type(odd) {
+    background-color: #ffffff; /* White */
+}
+
+.v-data-table >>> tbody tr:hover {
+    background-color: #DBD8E3; /* Blue Grey 100 */
+}
+
+.v-data-table >>> tbody td {
+    color: #263238; /* Blue Grey 900 */
+}
+
 .custom-title .v-data-table-header {
     padding-left: 20px;
-    /* Adjust the padding to move the title to the left */
-}
-
-.v-data-table-header {
-    background-color: black;
-}
-
-.color {
-    background-color: rgb(32, 42, 62);
 }
 
 .white-text {
-    color: white;
+  color: white;
 }
-</style>
+</style>   

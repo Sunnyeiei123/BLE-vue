@@ -14,8 +14,8 @@ const routes = [
     component: () => import('../views/Overview.vue')
   },
   {
-    path:'/error-log',
-    name: ' error-log',
+    path:'/location',
+    name: ' location',
 
     component:()=> import('../views/ErrLog.vue')
   },
