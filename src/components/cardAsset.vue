@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div class="d-flex justify-space-around">
-            <v-card class="custom-card" style="width: 400px; margin-top: 10rem; ">
+        <div class="d-flex justify-center">
+            <v-card class="custom-card" style="width: 300px; margin-top: 10rem; ">
                 <v-card-title class="headline grey lighten-2">
                     Asset Use
                 </v-card-title>
@@ -12,9 +12,9 @@
                 </v-card-text>
             </v-card>
 
-            <v-card class="custom-card" style="width: 400px; margin-top: 10rem; margin-left: 2rem">
+            <v-card class="custom-card" style="width: 300px; margin-top: 10rem; margin-left: 2rem">
                 <v-card-title class="headline grey lighten-2">
-                    Asset Un Use
+                    Asset Loss
                 </v-card-title>
                 <v-card-text>
                     <div class="red-text" style="font-size: 2.5rem; font-weight: bold;">
@@ -23,7 +23,7 @@
                 </v-card-text>
             </v-card>
 
-            <v-card class="custom-card" style="width: 400px; margin-top: 10rem; margin-left: 2rem">
+            <!-- <v-card class="custom-card" style="width: 400px; margin-top: 10rem; margin-left: 2rem">
                 <v-card-title class="headline grey lighten-2">
                     Asset Error/Lost Signal
                 </v-card-title>
@@ -32,7 +32,7 @@
                         1
                     </div>
                 </v-card-text>
-            </v-card>
+            </v-card> -->
         </div>
         <hr style="margin-top: 2.5rem; border: 1px solid;">
         <div class="d-flex flex-column align-items-center">
@@ -44,7 +44,7 @@
                     @click="selectImage(image)"
                     class="ma-2"
                 >
-                    Plan {{ index + 1 }}
+                    Floor {{ index + 1 }}
                 </v-btn>
             </div>
             <div v-if="selectedImage" class="mt-3 d-flex justify-center">

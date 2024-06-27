@@ -3,7 +3,7 @@
         <h1 class="text-center" style="margin-top: 3rem" >Asset List</h1>
         <v-container>
             <v-card class="table-card">
-                <v-data-table :headers="headers" :items="items" item-key="name" items-per-page="5" class="elevation-2">
+                <v-data-table :headers="headers" :items="items" item-key="name" items-per-page="10" class="elevation-2">
                     <template v-slot:[`item.Edit`]="{ item }">
                         <v-btn class="update-btn white-text mr-2" @click="openUpdateForm(item)">Update</v-btn>
                         <v-btn class="delete-btn white-text" @click="deleteItem(item)">Delete</v-btn>

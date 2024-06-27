@@ -7,7 +7,7 @@
                     :headers="headers" 
                     :items="items" 
                     item-key="ID" 
-                    items-per-page="5"
+                    items-per-page="10"
                     class="elevation-2"
                 >
                     <template v-slot:header="{ props: { headers } }">
