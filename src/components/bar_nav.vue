@@ -2,9 +2,9 @@
   <v-app>
     <v-app-bar class="color" app>
       <v-app-bar-nav-icon color="white" @click="drawer = !drawer" style="font-size: 24px;"></v-app-bar-nav-icon>
-      <v-toolbar-title class="white-text">BLE test</v-toolbar-title>
+      <v-toolbar-title class="white-text">BLE Aruba</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-span text class="white-text" style="padding: 1rem;">HI , {{ username }}</v-span>
+      <v-span text class="white-text" style="padding: 1rem;">Hi , {{ username }}</v-span>
       <v-avatar style="margin-right: 1rem">
         <v-img alt="User" src="../components/img/3541871.png"></v-img>
       </v-avatar>

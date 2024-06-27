@@ -3,7 +3,7 @@
         <div>
             <div>
                 <!-- <search /> -->
-                <errLog />
+                <Location />
                 <BarNav />
             </div>
         </div>
@@ -15,13 +15,13 @@
 
 <script>
 import BarNav from '../components/bar_nav.vue';
-import errLog from '../components/dataTable.vue';
+import Location from '../components/dataTable.vue';
 // import search from '../components/searchBox.vue';
 
 export default {
     components: {
         BarNav,
-        errLog,
+        Location,
         // search
     }
 }
