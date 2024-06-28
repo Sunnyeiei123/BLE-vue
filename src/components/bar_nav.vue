@@ -1,12 +1,12 @@
 <template>
   <v-app>
-    <v-app-bar class="color" app>
+    <v-app-bar class="color" style="padding: 0.5rem" app>
       <v-app-bar-nav-icon color="white" @click="drawer = !drawer" style="font-size: 24px;"></v-app-bar-nav-icon>
-      <v-toolbar-title class="white-text">BLE Aruba</v-toolbar-title>
+      <v-toolbar-title class="custom-eiei white-text text-h4">Wellness Asset</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-span text class="white-text" style="padding: 1rem;">Hi , {{ username }}</v-span>
+      <v-span text class="white-text text-h6" style="padding: 1rem;">Hi, {{ username }}</v-span>
       <v-avatar style="margin-right: 1rem">
-        <v-img alt="User" src="../components/img/3541871.png"></v-img>
+        <v-img alt="User" src="../components/img/3541871.png" class="ma-4" max-width="200"></v-img>
       </v-avatar>
     </v-app-bar>
     <v-navigation-drawer class="sidecolor" v-model="drawer" app>
@@ -54,7 +54,6 @@
   </v-app>
 </template>
 
-
 <script>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
@@ -65,7 +64,7 @@ export default {
     const drawer = ref(false);
     const selectedSubmenu = ref(null);
     const dashboardSubitems = ['Overview', 'Location'];
-    const mapSubitems = ['Asset'];
+    const mapSubitems = ['Asset', 'Access Point'];
     const username = ref(localStorage.getItem('username') || '');
 
     const toggleSubmenu = (menu) => {
@@ -76,6 +75,7 @@ export default {
       'Overview': '/overview',
       'Location': '/location',
       'Asset': '/list-asset',
+      'Access Point': '/access-point',
     };
 
     const goToRoute = (subItem) => {
@@ -168,4 +168,32 @@ export default {
   opacity: 0;
   transform: translateX(-10px);
 }
+
+@media (max-width: 600px) {
+  .v-app-bar {
+    font-size: 16px;
+  }
+  .v-app-bar-nav-icon {
+    font-size: 18px !important;
+  }
+  .v-avatar {
+    display: none;
+  }
+  .white-text {
+    font-size: 14px;
+  }
+  .dashboard-title,
+  .map-title {
+    font-size: 1rem;
+    padding: 0.3rem 0.5rem;
+  }
+  .subitem {
+    padding-left: 1rem;
+  }
+}
+.custom-eiei {
+  letter-spacing: 2px; /* ปรับระยะห่างระหว่างตัวอักษร */
+  margin-right: auto; /* เพิ่มระยะห่างด้านขวาถ้าจำเป็น */
+}
+
 </style>

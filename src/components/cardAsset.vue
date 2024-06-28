@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div class="d-flex justify-center">
-            <v-card class="custom-card" style="width: 300px; margin-top: 10rem; ">
+        <div class="d-flex justify-center flex-wrap">
+            <v-card class="custom-card" style="width: 300px; margin-top: 10rem;">
                 <v-card-title class="headline grey lighten-2">
                     Asset Use
                 </v-card-title>
@@ -22,21 +22,10 @@
                     </div>
                 </v-card-text>
             </v-card>
-
-            <!-- <v-card class="custom-card" style="width: 400px; margin-top: 10rem; margin-left: 2rem">
-                <v-card-title class="headline grey lighten-2">
-                    Asset Error/Lost Signal
-                </v-card-title>
-                <v-card-text>
-                    <div class="yellow-text" style="font-size: 2.5rem; font-weight: bold;">
-                        1
-                    </div>
-                </v-card-text>
-            </v-card> -->
         </div>
         <hr style="margin-top: 2.5rem; border: 1px solid;">
         <div class="d-flex flex-column align-items-center">
-            <div class="d-flex justify-space-around mt-5">
+            <div class="d-flex justify-space-around flex-wrap mt-5">
                 <v-btn
                     v-for="(image, index) in images"
                     :key="index"
@@ -48,7 +37,7 @@
                 </v-btn>
             </div>
             <div v-if="selectedImage" class="mt-3 d-flex justify-center">
-                <v-img :src="require(`../assets/${selectedImage}`)" height="800" width="1000" />
+                <v-img :src="require(`../assets/${selectedImage}`)" height="auto" width="100%" />
             </div>
         </div>
     </div>
@@ -139,5 +128,23 @@ export default {
 
 .justify-center {
     justify-content: center;
+}
+
+@media (max-width: 600px) {
+    .custom-card {
+        width: 90%;
+        margin: 1rem 0;
+    }
+
+    .d-flex {
+        flex-direction: column;
+    }
+}
+
+@media (min-width: 601px) and (max-width: 960px) {
+    .custom-card {
+        width: 45%;
+        margin: 1rem 2%;
+    }
 }
 </style>
