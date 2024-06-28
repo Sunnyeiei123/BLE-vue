@@ -1,24 +1,36 @@
+
 <template>
     <div>
         <div class="d-flex justify-center flex-wrap">
-            <v-card class="custom-card" style="width: 300px; margin-top: 10rem;">
+            <v-card class="custom-card" @click="navigateToLocation('/list-asset')">
                 <v-card-title class="headline grey lighten-2">
-                    Asset Use
+                    Total Asset
                 </v-card-title>
                 <v-card-text>
-                    <div class="green-text" style="font-size: 2.5rem; font-weight: bold;">
+                    <div class="bar-text">
                         {{ assetCount }} assets
                     </div>
                 </v-card-text>
             </v-card>
-
-            <v-card class="custom-card" style="width: 300px; margin-top: 10rem; margin-left: 2rem">
-                <v-card-title class="headline grey lighten-2">
-                    Asset Loss
+            <v-card class="custom-card" @click="navigateToLocation('/location')"
+                style="width: 300px; margin-top: 10rem; margin-left: 2rem">
+                <v-card-title class="headline grey lighten-2" style="font-weight: bold;">
+                    Asset In Use
+                </v-card-title>
+                <v-card-text>
+                    <div class="green-text" style="font-size: 2.5rem; font-weight: bold;">
+                        12 assets
+                    </div>
+                </v-card-text>
+            </v-card>
+            <v-card class="custom-card" @click="navigateToLocation('/location')"
+                style="width: 300px; margin-top: 10rem; margin-left: 2rem">
+                <v-card-title class="headline grey lighten-2" style="font-weight: bold;">
+                    Lost Signal
                 </v-card-title>
                 <v-card-text>
                     <div class="red-text" style="font-size: 2.5rem; font-weight: bold;">
-                        12
+                        12 assets
                     </div>
                 </v-card-text>
             </v-card>
@@ -26,13 +38,8 @@
         <hr style="margin-top: 2.5rem; border: 1px solid;">
         <div class="d-flex flex-column align-items-center">
             <div class="d-flex justify-space-around flex-wrap mt-5">
-                <v-btn
-                    v-for="(image, index) in images"
-                    :key="index"
-                    :class="{'selected-button': selectedImage === image}"
-                    @click="selectImage(image)"
-                    class="ma-2"
-                >
+                <v-btn v-for="(image, index) in images" :key="index"
+                    :class="{ 'selected-button': selectedImage === image }" @click="selectImage(image)" class="ma-2">
                     Floor {{ index + 1 }}
                 </v-btn>
             </div>
@@ -87,6 +94,14 @@ export default {
             this.selectedImage = image;
             // Store the selected image in localStorage
             localStorage.setItem('selectedImage', image);
+        },
+        // navigateToLocation(nextpage, selectedCard) {
+        //     this.$router.push(nextpage); // เปลี่ยนเส้นทาง URL ไปยังหน้าใหม่
+        //     this.selectedCard = selectedCard; // ตั้งค่า selectedCard เพื่อเปลี่ยนการเลือก Card ในหน้าที่ 2
+        // }
+        navigateToLocation(route, selectedCard) {
+            this.$router.push(route);
+            localStorage.setItem('selectedCard', selectedCard); // Store selected card in localStorage
         }
     }
 };
@@ -95,6 +110,10 @@ export default {
 <style scoped>
 .custom-card {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.bar-text {
+    color: rgb(32, 42, 62);
 }
 
 .green-text {
@@ -122,7 +141,7 @@ export default {
 }
 
 .selected-button {
-    background-color: black;
+    background-color: rgb(32, 42, 62);
     color: white;
 }
 
@@ -146,5 +165,29 @@ export default {
         width: 45%;
         margin: 1rem 2%;
     }
+}
+
+.custom-card {
+    width: 300px;
+    margin-top: 10rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    /* Make the cursor a pointer to indicate it's clickable */
+}
+
+.custom-card:hover {
+    transform: translateY(-10px);
+    /* Lift the card up on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    /* Add a shadow effect */
+}
+
+.headline {
+    font-weight: bold;
+}
+
+.bar-text {
+    font-size: 2.5rem;
+    font-weight: bold;
 }
 </style>

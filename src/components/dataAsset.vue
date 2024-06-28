@@ -1,6 +1,6 @@
 <template>
     <div class="list-asset">
-        <h1 class="text-center" style="margin-top: 3rem" >Asset List</h1>
+        <h1 class="text-center" style="margin-top: 3rem" >Total Asset</h1>
         <v-container>
             <v-card class="table-card">
                 <v-data-table :headers="headers" :items="items" item-key="name" items-per-page="10" class="elevation-2">
