@@ -1,6 +1,6 @@
 <template>
     <div class="list-asset">
-        <h1 class="text-center" style="margin-top: 3rem" >Total Asset</h1>
+        <h1 class="text-center" style="margin-top: 3rem">Total Asset</h1>
         <v-container>
             <v-card class="table-card">
                 <v-data-table :headers="headers" :items="items" item-key="name" items-per-page="10" class="elevation-2">
@@ -14,17 +14,20 @@
                 </v-data-table>
             </v-card>
 
-            <!-- Update Form Dialog -->
+            <!-- Add Button -->
+            <v-btn class="add-btn white-text" @click="openAddForm">Add</v-btn>
+
+            <!-- Update/Add Form Dialog -->
             <v-dialog v-model="updateDialog" max-width="600px">
-                <v-card class="update-card">
-                    <v-card-title class="update-card-title">
-                        Update Item
+                <v-card :class="[isEdit ? 'update-card' : 'add-card']">
+                    <v-card-title :class="[isEdit ? 'update-card-title' : 'add-card-title']">
+                        {{ isEdit ? 'Update' : 'Add' }} Tag
                     </v-card-title>
                     <v-card-text>
                         <v-container>
                             <v-row>
                                 <v-col cols="12">
-                                    <v-text-field v-model="updatedItem.Mac" label="Mac"></v-text-field>
+                                    <v-text-field v-model="updatedItem.Mac" label="Mac Address"></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
                                     <v-text-field v-model="updatedItem.name" label="Asset Name"></v-text-field>
@@ -35,8 +38,8 @@
                             </v-row>
                         </v-container>
                     </v-card-text>
-                    <v-card-actions class="update-card-actions">
-                        <v-btn class="save-btn white-text" @click="updateItem">Save</v-btn>
+                    <v-card-actions :class="[isEdit ? 'update-card-actions' : 'add-card-actions']">
+                        <v-btn :class="[isEdit ? 'save-btn white-text' : 'add-card-title']" @click="saveItem">{{ isEdit ? 'Save' : 'Add' }}</v-btn>
                         <v-btn class="cancel-btn" @click="closeUpdateForm">Cancel</v-btn>
                     </v-card-actions>
                 </v-card>
@@ -55,7 +58,7 @@ export default {
             headers: [
                 { title: 'Mac', value: 'Mac' },
                 {
-                    title: 'Infomation',
+                    title: 'Information',
                     align: 'center',
                     class: 'custom-title',
                     children: [
@@ -69,18 +72,20 @@ export default {
             ],
             items: [],
             updateDialog: false,
+            isEdit: false,
             updatedItem: {
                 ID: '',
                 Mac: '',
                 name: '',
-                Description: '',
-            },
+                Description: '', // New field for Add Item
+            }
         };
     },
     mounted() {
         this.fetchData();
     },
     methods: {
+        // Fetch data from API
         async fetchData() {
             try {
                 const response = await axios.get('http://10.1.55.230:7777/tags/gets');
@@ -97,16 +102,34 @@ export default {
                 console.error('Error fetching data:', error);
             }
         },
+        // Open update form
         openUpdateForm(item) {
+            this.isEdit = true;
             this.updatedItem.ID = item.ID;
             this.updatedItem.Mac = item.Mac;
             this.updatedItem.name = item.name;
-            this.updatedItem.Description = item.description;
+            this.updatedItem.Description = item.Description;
             this.updateDialog = true;
         },
+        // Open add form
+        openAddForm() {
+            this.isEdit = false;
+            this.updatedItem = { ID: '', Mac: '', name: '', Description: '', addItem: '' }; // Reset fields
+            this.updateDialog = true;
+        },
+        // Close form dialog
         closeUpdateForm() {
             this.updateDialog = false;
         },
+        // Save item (add or update)
+        async saveItem() {
+            if (this.isEdit) {
+                await this.updateItem();
+            } else {
+                await this.addItem();
+            }
+        },
+        // Update item
         async updateItem() {
             try {
                 const response = await axios.patch(`http://10.1.55.230:7777/tags/update/${this.updatedItem.ID}`, {
@@ -114,18 +137,13 @@ export default {
                     description: this.updatedItem.Description // Update the description field
                 });
                 console.log(response);
-                // Check if the response contains the updated item data
                 if (response.data && response.data._id) {
                     alert('Item updated successfully!');
-                    // Optionally, you can update the item in the table without making another API call
                     const updatedIndex = this.items.findIndex(item => item.ID === this.updatedItem.ID);
                     if (updatedIndex !== -1) {
-                        // Update both assetName and description fields in the table
                         this.items[updatedIndex].name = response.data.assetName;
                         this.items[updatedIndex].Description = response.data.description === undefined ? '-' : response.data.description;
-
                     }
-                    // Close the update form dialog
                     this.updateDialog = false;
                 } else {
                     alert('Failed to update item. Please try again later.');
@@ -135,17 +153,51 @@ export default {
                 alert(error.response.data.detail.description);
             }
         },
+        // Add new item
+        async addItem() {
+            console.log(this.updatedItem.Mac.replace(/\s/g, "").length)
+            const mac = this.updatedItem.Mac.replace(/\s/g, "");
+            if(mac.length != 12){
+                alert("Please input Mac address 12 latter only");
+            }else{
+                try {
+                    var data = {
+                    tagMac: mac,
+                    assetName: this.updateItem.name == "" ? this.updateItem.name : "unknown",
+                    description: this.updateItem.Description == "" ? this.updateItem.name : "-"
+                }
+                const response = await axios.post('http://10.1.55.230:7777/tags/add', data);
+                console.log(response);
+                if (response.data && response.data._id) {
+                    alert('Item added successfully!');
+                    this.items.push({
+                        ID: response.data._id,
+                        Mac: response.data.tagMac,
+                        name: response.data.assetName,
+                        Description: response.data.description,
+                        Battery: '-',
+                    });
+                    this.updateDialog = false;
+                } else {
+                    alert('Failed to add item. Please try again later.');
+                }
+            } catch (error) {
+                console.error('Error adding item:', error);
+                alert('Failed to add item. Please try again later.');
+            }
+            }
+        },
+        // Delete item
         async deleteItem(item) {
-            // Logic for deleting the item
             console.log('Delete item:', item);
-
-            // Show confirmation dialog
             const confirmed = window.confirm(`Are you sure you want to delete this Tag Mac address: ${item.Mac} ?`);
-
-            // If user confirms, proceed with deletion
             if (confirmed) {
                 try {
-                    const response = await axios.delete(`http://10.1.55.230:7777/tags/delete/${item.ID}`);
+                    const response = await axios.delete(`http://10.1.55.230:7777/tags/delete/${item.ID}`, {
+                        data: {
+                            tagMac: item.Mac
+                        }
+                    });
                     alert(response.data.detail);
                     this.fetchData();
                 } catch (error) {
@@ -155,6 +207,7 @@ export default {
                 console.log('Deletion canceled by user.');
             }
         },
+        // View item details
         async viewEach(item) {
             this.$router.push({ name: 'signal', query: { tagMac: item.Mac } });
         }
@@ -219,6 +272,10 @@ export default {
 }
 
 .delete-btn {
+    background-color: #37474f
+}
+
+.delete-btn {
     background-color: #F03C3C !important; /* Red 800 */
 }
 
@@ -261,6 +318,23 @@ export default {
 
 .cancel-btn {
     color: #37474f !important; /* Blue Grey 800 */
+}
+/* Add button styles */
+.add-btn {
+    background-color: #212A3E !important; /* Green */
+    color: white !important;
+    margin-top: 1rem;
+}
+
+.add-btn:hover {
+    opacity: 0.5;
+}
+.add-btn {
+    background-color: rgb(32, 42, 62) !important; /* Green 800 */
+}
+.add-card-title {
+    background-color: rgb(32, 42, 62); /* Blue Grey 700 */
+    color: white;
 }
 </style>
 

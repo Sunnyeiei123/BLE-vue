@@ -2,7 +2,7 @@
 <template>
     <div>
         <div class="d-flex justify-center flex-wrap">
-            <v-card class="custom-card" @click="navigateToLocation('/list-asset')">
+            <v-card class="custom-card" @click="navigateToLocation('/list-asset', 1)">
                 <v-card-title class="headline grey lighten-2">
                     Total Asset
                 </v-card-title>
@@ -12,25 +12,25 @@
                     </div>
                 </v-card-text>
             </v-card>
-            <v-card class="custom-card" @click="navigateToLocation('/location')"
+            <v-card class="custom-card" @click="navigateToLocation('/location', 2)"
                 style="width: 300px; margin-top: 10rem; margin-left: 2rem">
                 <v-card-title class="headline grey lighten-2" style="font-weight: bold;">
                     Asset In Use
                 </v-card-title>
                 <v-card-text>
                     <div class="green-text" style="font-size: 2.5rem; font-weight: bold;">
-                        12 assets
+                        {{ assetInUseCount }} assets
                     </div>
                 </v-card-text>
             </v-card>
-            <v-card class="custom-card" @click="navigateToLocation('/location')"
+            <v-card class="custom-card" @click="navigateToLocation('/location', 3)"
                 style="width: 300px; margin-top: 10rem; margin-left: 2rem">
                 <v-card-title class="headline grey lighten-2" style="font-weight: bold;">
                     Lost Signal
                 </v-card-title>
                 <v-card-text>
                     <div class="red-text" style="font-size: 2.5rem; font-weight: bold;">
-                        12 assets
+                        {{ assetLostCount }} assets
                     </div>
                 </v-card-text>
             </v-card>
@@ -57,6 +57,8 @@ export default {
     data() {
         return {
             assetCount: 0,
+            assetLostCount:0,
+            assetInUseCount:0,
             selectedImage: null,
             images: [
                 'Screenshot 2024-06-21 135052.png',
@@ -73,6 +75,8 @@ export default {
     },
     mounted() {
         this.fetchAssetCount();
+        this.fetchAssetsInUseCount();
+        this.fetchAssetsLostCount();
         // Check if there is a previously selected image in localStorage
         const storedImage = localStorage.getItem('selectedImage');
         if (storedImage && this.images.includes(storedImage)) {
@@ -88,6 +92,26 @@ export default {
                 }
             } catch (error) {
                 console.error('Error fetching asset count:', error);
+            }
+        },
+        async fetchAssetsInUseCount() {
+            try {
+                const response = await axios.get('http://10.1.55.230:7777/current/gets/use');
+                if (response.data && response.data.total) {
+                    this.assetInUseCount = response.data.total;
+                }
+            } catch (error) {
+                console.error('Error fetching assets in use count:', error);
+            }
+        },
+        async fetchAssetsLostCount() {
+            try {
+                const response = await axios.get('http://10.1.55.230:7777/current/gets/lost');
+                if (response.data && response.data.total) {
+                    this.assetLostCount = response.data.total;
+                }
+            } catch (error) {
+                console.error('Error fetching lost assets count:', error);
             }
         },
         selectImage(image) {
