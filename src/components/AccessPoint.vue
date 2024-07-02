@@ -35,7 +35,7 @@ export default {
                     align: 'center',
                     class: 'custom-title',
                     children: [
-                        { title: 'Assets', value: 'name' },
+                        { title: 'Access point', value: 'name' },
                         { title: 'Description', value: 'Description' },
                         { title: 'Location', value: 'Location' },
                     ],

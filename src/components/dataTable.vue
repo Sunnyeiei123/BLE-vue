@@ -102,23 +102,9 @@ export default {
                     ],
                 },
             ],
-            headersInUse: [
-                { title: 'Mac', value: 'Mac' },
-                {
-                    title: 'Infomation',
-                    align: 'center',
-                    class: 'custom-title',
-                    children: [
-                        { title: 'Assets', value: 'name' },
-                        { title: 'Description', value: 'Description' },
-                        { title: 'Battery', value: 'Battery' },
-                        { title: 'View History', value: 'View' },
-                        { title: 'Edit', value: 'Edit' },
-                    ],
-                },
-            ],
             totalAssets: [],
             assetsInUse: [],
+            assetsLost: [],
             lostAssets: [],
             currentItems: [],
             currentHeaders: [],
@@ -130,39 +116,50 @@ export default {
                 name: '',
                 Description: '',
             },
-            selectedCard: 'totalAssets', // Default selection
+            selectedCard: '', // Default selection
         };
     },
     mounted() {
         this.fetchData();
-        this.startAutoReload();
     },
     methods: {
         async fetchData() {
             try {
-                const totalAssetsResponse = await axios.get('http://10.1.55.230:7777/current/gets');
-                const assetsInUseResponse = await axios.get('http://10.1.55.230:7777/tags/gets');
+                const totalAssetsResponse = await axios.get('http://10.1.55.230:7777/current/gets/all');
+                const assetsInUseResponse = await axios.get('http://10.1.55.230:7777/current/gets/use');
+                const assetsLostResponse = await axios.get('http://10.1.55.230:7777/current/gets/lost');
+                // Assuming you will add logic to fetch lost assets as well
 
-                this.totalAssets = totalAssetsResponse.data.map(item => ({
+                this.totalAssets = totalAssetsResponse.data.data.map(item => ({
                     ID: item._id,
                     name: item.assetName,
                     Mac: item.tagMac,
                     timeStamp: item.timeStamp,
-                    location: item.location,
+                    location: item.location
                 }));
 
                 this.assetsInUse = assetsInUseResponse.data.data.map(item => ({
                     ID: item._id,
                     name: item.assetName,
                     Mac: item.tagMac,
-                    Description: item.description,
-                    Battery: item.battery,
+                    timeStamp: item.timeStamp,
+                    location: item.location
                 }));
 
-                // Initial table shown
-                this.currentItems = this.totalAssets;
-                this.currentHeaders = this.headers;
+                this.assetsLost = assetsLostResponse.data.data.map(item => ({
+                    ID: item._id,
+                    name: item.assetName,
+                    Mac: item.tagMac,
+                    timeStamp: item.timeStamp,
+                    location: item.location
+                }));
+                // Set initial data to show total assets
+                // this.currentItems = this.totalAssets;
+                // this.currentHeaders = this.headers;
+
+                this.chooseTable();
                 this.showTable = true;
+
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -176,16 +173,32 @@ export default {
             this.selectedCard = 'totalAssets'; // Update selected card
         },
         showAssetsInUse() {
-            this.currentItems = this.assetsInUse;
-            this.currentHeaders = this.headersInUse;
+            this.currentItems = this.assetsInUse; // Show total assets data
+            this.currentHeaders = this.headers; // Use the same headers as totalAssets
             this.selectedCard = 'assetsInUse'; // Update selected card
         },
         showLostAssets() {
-            // Logic to fetch and show lost assets
-            // Example:
-            // this.currentItems = this.lostAssets;
-            // this.currentHeaders = this.headersForLostAssets;
+            this.currentItems = this.assetsLost; // Show total assets data
+            this.currentHeaders = this.headers; // Use the same headers as totalAssets
             this.selectedCard = 'lostAssets'; // Update selected card
+        },
+        chooseTable() {
+            const number = localStorage.getItem('selectedCard');
+            console.log(number)
+            switch (number) {
+                case '1':
+                    this.showTotalAssets();
+                    break;
+                case '2':
+                    this.showAssetsInUse();
+                    break;
+                case '3':
+                    this.showLostAssets();
+                    break;
+                default:
+                    console.log("do here ")
+                    this.showTotalAssets();
+            }
         },
         openUpdateForm(item) {
             this.updatedItem.ID = item.ID;
@@ -240,6 +253,7 @@ export default {
     },
 };
 </script>
+
 
 <style scoped>
 .list-asset {
@@ -381,5 +395,11 @@ export default {
 .cancel-btn {
     color: #37474f !important;
     /* Blue Grey 800 */
+}
+
+.selected-card {
+    background-color: rgb(32, 42, 62);
+    /* Blue Grey 100 */
+    color: white;
 }
 </style>
