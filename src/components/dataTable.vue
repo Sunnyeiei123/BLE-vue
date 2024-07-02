@@ -27,8 +27,8 @@
         <!-- Data Tables -->
         <v-container v-if="showTable">
             <v-card class="table-card">
-                <v-data-table :headers="currentHeaders" :items="currentItems" item-key="ID" items-per-page="10"
-                    class="elevation-2">
+                <v-data-table :headers="currentHeaders" :items="currentItems" :row-props="getRowProps" item-key="ID"
+                    items-per-page="10" class="elevation-2">
                     <!-- Dynamic Slots for Update and View Buttons -->
                     <template v-slot:[`item.Edit`]="{ item }">
                         <v-btn class="update-btn white-text mr-2" @click="openUpdateForm(item)">Update</v-btn>
@@ -49,6 +49,7 @@
                         </thead>
                     </template>
                 </v-data-table>
+
             </v-card>
 
             <!-- Update Form Dialog -->
@@ -250,12 +251,33 @@ export default {
         async viewEach(item) {
             this.$router.push({ name: 'signal', query: { tagMac: item.Mac } });
         },
+        getRowProps(item) {
+            if (item.item.location !== 'No Signal') {
+                return { class: 'row-in-use' };
+            } else if (item.item.location === 'No Signal') {
+                return { class: 'row-lost' };
+            }
+        }
     },
 };
 </script>
 
 
-<style scoped>
+<style>
+.row-in-use {
+    color: #348734;
+    font-weight: bold;
+    /* font-size: 0.8rem; */
+    background-color: #b0e5b0;
+}
+
+.row-lost {
+    color: #F03C3C;
+    font-weight: bold;
+    /* font-size: 0.8rem; */
+    background-color:#f3b1b1 ;
+}
+
 .list-asset {
     background-color: #f1f6f9;
     /* Blue Grey 50 */

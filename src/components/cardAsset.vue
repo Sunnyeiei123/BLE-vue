@@ -2,7 +2,7 @@
 <template>
     <div>
         <div class="d-flex justify-center flex-wrap">
-            <v-card class="custom-card" @click="navigateToLocation('/list-asset', 1)">
+            <v-card class="custom-card" @click="navigateToLocation('/location', 1)">
                 <v-card-title class="headline grey lighten-2">
                     Total Asset
                 </v-card-title>
