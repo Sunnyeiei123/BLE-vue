@@ -74,6 +74,11 @@ export default {
         minZoom: -2,
         maxZoom: 2,
         zoom: 0, // กำหนดค่า zoom เริ่มต้น
+        zoomControl: true,
+        zoom: 1,
+        zoomAnimation: false,
+        fadeAnimation: true,
+        markerZoomAnimation: true,
         center: [850, 1400] // กำหนดตำแหน่งศูนย์กลางของแผนที่
       });
 
