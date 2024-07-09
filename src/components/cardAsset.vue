@@ -34,10 +34,15 @@
     </div>
     <hr style="margin-top: 2.5rem; border: 1px solid;">
     <div>
+      <div>
+        <button @click="changeMap(1)">Map 1</button>
+        <button @click="changeMap(2)">Map 2</button>
+      </div>
       <div id="map" style="height: 600px;"></div>
     </div>
   </div>
 </template>
+
 
 <script>
 import axios from 'axios';
@@ -50,16 +55,37 @@ export default {
       assetLostCount: 0,
       assetInUseCount: 0,
       map: null,
-      imageUrl: require('@/assets/อาคาร Wellnese 9 ชั้น-1.png'), // ใช้ require เพื่อให้ webpack จัดการ path ให้ถูกต้อง
-      imageBounds: [
-        [0, 0],
-        [1700, 2800]
-      ], // กำหนด bounds ของรูปภาพ (พิกัดรูปภาพ)
+      currentMapIndex: 1,
+      maps: [
+        {
+          imageUrl: require('@/assets/อาคาร Wellnese 9 ชั้น-1.png'),
+          imageBounds: [
+            [0, 0],
+            [1700, 2800]
+          ],
+          markers: [
+            { position: [817, 1766], popupText: 'สถานที่ 1' },
+            { position: [1300,850], popupText: 'สถานที่ 2' }
+          ]
+        },
+        {
+          imageUrl: require('@/assets/อาคาร Wellnese 9 ชั้น-1.png'),
+          imageBounds: [
+            [0, 0],
+            [1700, 2800]
+          ],
+          markers: [
+            { position: [600, 800], popupText: 'สถานที่ A' },
+            { position: [1100, 1600], popupText: 'สถานที่ B' }
+          ]
+        },
+        // เพิ่มข้อมูลแผนที่ 3 และ 4
+      ],
       customIcon: L.icon({
-        iconUrl: require('@/assets/custom-marker.png'), // เปลี่ยนเป็น path ของรูป marker ของคุณ
-        iconSize: [38, 38], // ขนาดของ icon
-        iconAnchor: [19, 38], // จุด anchor ของ icon
-        popupAnchor: [0, -38] // จุด anchor ของ popup เมื่อเปิด
+        iconUrl: require('@/assets/custom-marker.png'),
+        iconSize: [20, 20], // ขนาดของ icon
+        iconAnchor: [10, 10], // จุด anchor ของ icon อยู่ตรงกลางของ icon
+        popupAnchor: [0, -10] // จุด anchor ของ popup อยู่ด้านบนของ icon
       })
     };
   },
@@ -68,6 +94,7 @@ export default {
   },
   methods: {
     initMap() {
+      const mapData = this.maps[this.currentMapIndex - 1];
       // สร้างแผนที่
       this.map = L.map('map', {
         crs: L.CRS.Simple,
@@ -83,20 +110,25 @@ export default {
       });
 
       // เพิ่ม image overlay
-      L.imageOverlay(this.imageUrl, this.imageBounds).addTo(this.map);
+      L.imageOverlay(mapData.imageUrl, mapData.imageBounds).addTo(this.map);
 
       // ตั้งค่า view ของแผนที่ให้แสดงภาพทั้งหมด
-      this.map.fitBounds(this.imageBounds);
+      this.map.fitBounds(mapData.imageBounds);
 
       // เพิ่ม markers
-      this.addMarkers();
+      this.addMarkers(mapData.markers);
     },
-    addMarkers() {
-      const marker1 = L.marker([500, 700], { icon: this.customIcon }).addTo(this.map)
-        .bindPopup('สถานที่ 1');
-      const marker2 = L.marker([1000, 1500], { icon: this.customIcon }).addTo(this.map)
-        .bindPopup('สถานที่ 2');
-      // เพิ่ม markers เพิ่มเติมตามต้องการ
+    addMarkers(markers) {
+      markers.forEach(marker => {
+        L.marker(marker.position, { icon: this.customIcon })
+          .addTo(this.map)
+          .bindPopup(marker.popupText);
+      });
+    },
+    changeMap(mapIndex) {
+      this.currentMapIndex = mapIndex;
+      this.map.remove(); // ลบแผนที่เก่า
+      this.initMap(); // สร้างแผนที่ใหม่
     },
     async fetchAssetCount() {
       try {
@@ -230,3 +262,4 @@ export default {
   height: 600px;
 }
 </style>
+
