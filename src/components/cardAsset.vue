@@ -1,4 +1,3 @@
-
 <template>
     <div>
         <div class="d-flex justify-center flex-wrap">
@@ -44,7 +43,7 @@
                 </v-btn>
             </div>
             <div v-if="selectedImage" class="mt-3 d-flex justify-center">
-                <v-img :src="require(`../assets/${selectedImage}`)" height="auto" width="100%" />
+                <v-img :src="require(`../assets/${selectedImage}`)" width="2500px" height="900px" />
             </div>
         </div>
     </div>
@@ -57,8 +56,8 @@ export default {
     data() {
         return {
             assetCount: 0,
-            assetLostCount:0,
-            assetInUseCount:0,
+            assetLostCount: 0,
+            assetInUseCount: 0,
             selectedImage: null,
             images: [
                 'Screenshot 2024-06-21 135052.png',
