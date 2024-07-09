@@ -38,12 +38,12 @@
         <div class="d-flex flex-column align-items-center">
             <div class="d-flex justify-space-around flex-wrap mt-5">
                 <v-btn v-for="(image, index) in images" :key="index"
-                    :class="{ 'selected-button': selectedImage === image }" @click="selectImage(image)" class="ma-2">
+                    :class="{ 'selected-button': selectedImageIndex === index }" @click="selectImage(index)" class="ma-2">
                     Floor {{ index + 1 }}
                 </v-btn>
             </div>
-            <div v-if="selectedImage" class="mt-3 d-flex justify-center">
-                <v-img :src="require(`../assets/${selectedImage}`)" width="2500px" height="900px" />
+            <div v-if="selectedImageIndex !== null" class="mt-3 d-flex justify-center">
+                <component :is="floorComponents[selectedImageIndex]" />
             </div>
         </div>
     </div>
@@ -51,14 +51,19 @@
 
 <script>
 import axios from 'axios';
+import Floor1 from './wellness1.vue';
 
 export default {
+    components: {
+        Floor1
+        // Add other floor components here
+    },
     data() {
         return {
             assetCount: 0,
             assetLostCount: 0,
             assetInUseCount: 0,
-            selectedImage: null,
+            selectedImageIndex: null,
             images: [
                 'อาคาร Wellnese 9 ชั้น-1.png',
                 'อาคาร Wellnese 9 ชั้น-2.png',
@@ -69,6 +74,17 @@ export default {
                 'plan7.png',
                 'plan8.png',
                 'plan9.png'
+            ],
+            floorComponents: [
+                'Floor1',
+                'Floor2',
+                'Floor3',
+                'Floor4', // Adjust as per your component filenames
+                'Floor5',
+                'Floor6',
+                'Floor7',
+                'Floor8',
+                'Floor9'
             ]
         };
     },
@@ -77,9 +93,9 @@ export default {
         this.fetchAssetsInUseCount();
         this.fetchAssetsLostCount();
         // Check if there is a previously selected image in localStorage
-        const storedImage = localStorage.getItem('selectedImage');
-        if (storedImage && this.images.includes(storedImage)) {
-            this.selectedImage = storedImage;
+        const storedImageIndex = localStorage.getItem('selectedImageIndex');
+        if (storedImageIndex && this.images[storedImageIndex]) {
+            this.selectedImageIndex = storedImageIndex;
         }
     },
     methods: {
@@ -113,15 +129,11 @@ export default {
                 console.error('Error fetching lost assets count:', error);
             }
         },
-        selectImage(image) {
-            this.selectedImage = image;
-            // Store the selected image in localStorage
-            localStorage.setItem('selectedImage', image);
+        selectImage(index) {
+            this.selectedImageIndex = index;
+            // Store the selected image index in localStorage
+            localStorage.setItem('selectedImageIndex', index);
         },
-        // navigateToLocation(nextpage, selectedCard) {
-        //     this.$router.push(nextpage); // เปลี่ยนเส้นทาง URL ไปยังหน้าใหม่
-        //     this.selectedCard = selectedCard; // ตั้งค่า selectedCard เพื่อเปลี่ยนการเลือก Card ในหน้าที่ 2
-        // }
         navigateToLocation(route, selectedCard) {
             this.$router.push(route);
             localStorage.setItem('selectedCard', selectedCard); // Store selected card in localStorage
