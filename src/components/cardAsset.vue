@@ -60,9 +60,9 @@ export default {
             assetInUseCount: 0,
             selectedImage: null,
             images: [
-                'Screenshot 2024-06-21 135052.png',
-                'plan2.png',
-                'plan3.png',
+                'อาคาร Wellnese 9 ชั้น-1.png',
+                'อาคาร Wellnese 9 ชั้น-2.png',
+                'อาคาร Wellnese 9 ชั้น-3.png',
                 'plan4.png',
                 'plan5.png',
                 'plan6.png',

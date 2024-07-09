@@ -13,6 +13,7 @@
     "core-js": "^3.8.3",
     "install": "^0.13.0",
     "jsqr": "^1.4.0",
+    "leaflet": "^1.9.4",
     "qr-scanner": "^1.4.2",
     "qrcode-reader": "^1.0.4",
     "roboto-fontface": "*",
@@ -28,5 +29,9 @@
     "@vue/cli-service": "~5.0.0",
     "vue-cli-plugin-vuetify": "~2.5.8",
     "webpack-plugin-vuetify": "^2.0.0-alpha.0"
-  }
+  },
+  "description": "## Project setup ``` yarn install ```",
+  "main": "babel.config.js",
+  "author": "",
+  "license": "ISC"
 }
