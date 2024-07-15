@@ -219,19 +219,9 @@
         }
       },
       // View item details
-      viewEach(item) {
-        console.log('View item:', item);
-        this.$router.push({
-          name: 'Detail',
-          params: {
-            name: item.name,
-            ID: item.ID,
-            Mac: item.Mac,
-            Description: item.Description,
-            Battery: item.Battery,
-          },
-        });
-      },
+      async viewEach(item) {
+            this.$router.push({ name: 'signal', query: { tagMac: item.Mac } });
+        },
       // Handle file change and scan for QR code
       onFileChange(event) {
         const file = event.target.files[0];
