@@ -84,7 +84,8 @@
 </template>
 
 <script>
-import axios from 'axios';
+// import api from 'api';
+import { api, url } from "../axios";
 
 export default {
     name: 'list-asset',
@@ -126,9 +127,9 @@ export default {
     methods: {
         async fetchData() {
             try {
-                const totalAssetsResponse = await axios.get('http://10.1.55.230:7777/current/gets/all');
-                const assetsInUseResponse = await axios.get('http://10.1.55.230:7777/current/gets/use');
-                const assetsLostResponse = await axios.get('http://10.1.55.230:7777/current/gets/lost');
+                const totalAssetsResponse = await api.get('/current/gets/all');
+                const assetsInUseResponse = await api.get('/current/gets/use');
+                const assetsLostResponse = await api.get('/current/gets/lost');
                 // Assuming you will add logic to fetch lost assets as well
 
                 this.totalAssets = totalAssetsResponse.data.data.map(item => ({
@@ -213,7 +214,7 @@ export default {
         },
         async updateItem() {
             try {
-                const response = await axios.patch(`http://10.1.55.230:7777/tags/update/${this.updatedItem.ID}`, {
+                const response = await api.patch(`/tags/update/${this.updatedItem.ID}`, {
                     assetName: this.updatedItem.name,
                     description: this.updatedItem.Description
                 });
@@ -238,7 +239,7 @@ export default {
             const confirmed = window.confirm(`Are you sure you want to delete this Tag Mac address: ${item.Mac} ?`);
             if (confirmed) {
                 try {
-                    const response = await axios.delete(`http://10.1.55.230:7777/tags/delete/${item.ID}`);
+                    const response = await api.delete(`/tags/delete/${item.ID}`);
                     alert(response.data.detail);
                     this.fetchData();
                 } catch (error) {
