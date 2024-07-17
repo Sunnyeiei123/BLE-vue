@@ -1,16 +1,9 @@
 <template>
     <div>
-        <div>
-            <div>
-                <!-- <search /> -->
-                <Location />
-                <BarNav />
-            </div>
-        </div>
+        <!-- <search /> -->
+        <BarNav />
+        <Location />
     </div>
-
-
-
 </template>
 
 <script>

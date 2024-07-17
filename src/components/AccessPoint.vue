@@ -21,7 +21,8 @@
 </template>
 
 <script>
-import axios from 'axios';
+// import axios from 'axios';
+import { api } from "../axios";
 
 export default {
     name: 'CopyOfListAsset',
@@ -51,7 +52,7 @@ export default {
     methods: {
         async fetchData() {
             try {
-                const assetsInUseResponse = await axios.get('http://10.1.55.230:7777/ap/gets'); // Fetch from new endpoint
+                const assetsInUseResponse = await api.get('/ap/gets'); // Fetch from new endpoint
 
                 this.currentItems = assetsInUseResponse.data.map(item => ({
                     ID: item._id,

@@ -55,9 +55,10 @@
   </template>
   
   <script>
-  import axios from 'axios';
+  // import api from 'api';
   import { QrcodeStream } from 'vue3-qrcode-reader';
   import jsQR from 'jsqr';
+  import { api } from "../axios";
   
   export default {
     name: 'list-asset',
@@ -99,7 +100,7 @@
       // Fetch data from API
       async fetchData() {
         try {
-          const response = await axios.get('http://10.1.55.230:7777/tags/gets');
+          const response = await api.get('/tags/gets');
           const data = response.data;
   
           this.items = data.data.map(item => ({
@@ -143,7 +144,7 @@
       // Update item
       async updateItem() {
         try {
-          const response = await axios.patch(`http://10.1.55.230:7777/tags/update/${this.updatedItem.ID}`, {
+          const response = await api.patch(`/tags/update/${this.updatedItem.ID}`, {
             assetName: this.updatedItem.name,
             description: this.updatedItem.Description,
           });
@@ -177,7 +178,7 @@
               assetName: this.updatedItem.name === '' ? 'unknown' : this.updatedItem.name,
               description: this.updatedItem.Description === '' ? '-' : this.updatedItem.Description,
             };
-            const response = await axios.post('http://10.1.55.230:7777/tags/add', data);
+            const response = await api.post('/tags/add', data);
             console.log(response);
             if (response.data && response.data._id) {
               alert('Item added successfully!');
@@ -204,7 +205,7 @@
         const confirmed = window.confirm(`Are you sure you want to delete this Tag Mac address: ${item.Mac} ?`);
         if (confirmed) {
           try {
-            const response = await axios.delete(`http://10.1.55.230:7777/tags/delete/${item.ID}`, {
+            const response = await api.delete(`/tags/delete/${item.ID}`, {
               data: {
                 tagMac: item.Mac,
               },

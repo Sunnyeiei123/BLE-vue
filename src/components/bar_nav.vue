@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <div>
     <v-app-bar class="color" style="padding: 0.5rem" app>
       <v-app-bar-nav-icon color="white" @click="drawer = !drawer" style="font-size: 24px;"></v-app-bar-nav-icon>
       <v-toolbar-title class="custom-eiei white-text text-h4">Wellness Asset</v-toolbar-title>
@@ -48,16 +48,14 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-    <v-main>
-      <router-view></router-view>
-    </v-main>
-  </v-app>
+  </div>
 </template>
 
 <script>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import router from '../router';
+import { api } from "../axios";
 
 export default {
   setup() {
@@ -84,7 +82,7 @@ export default {
 
     const fetchUsernameById = async (id) => {
       try {
-        const response = await axios.get(`http://10.1.55.230:7777/user/gets`);
+        const response = await api.get(`/user/gets`);
         const user = response.data.find(user => user._id === id);
         if (user) {
           username.value = user.username;
@@ -192,8 +190,7 @@ export default {
   }
 }
 .custom-eiei {
-  letter-spacing: 2px; /* ปรับระยะห่างระหว่างตัวอักษร */
-  margin-right: auto; /* เพิ่มระยะห่างด้านขวาถ้าจำเป็น */
+  letter-spacing: 2px;
+  margin-right: auto;
 }
-
 </style>

@@ -29,7 +29,8 @@
 </template>
 
 <script>
-import axios from 'axios';
+// import axios from 'axios';
+import { api } from "../axios";
 
 export default {
   data() {
@@ -41,7 +42,7 @@ export default {
   methods: {
     async login() {
       try {
-        const response = await axios.post('http://10.1.55.230:7777/user/login', {
+        const response = await api.post('/user/login', {
           username: this.username,
           password: this.password
         });

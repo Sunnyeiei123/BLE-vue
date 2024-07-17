@@ -1,7 +1,7 @@
 <template>
   <div>
-    <cardAsset />
     <BarNav />
+    <cardAsset />
   </div>
 </template>
 

@@ -29,7 +29,8 @@
 </template>
 
 <script>
-import axios from 'axios';
+// import axios from 'axios';
+import { api, url } from "../axios";
 
 export default {
     name: 'list-asset',
@@ -57,7 +58,7 @@ export default {
     methods: {
         async fetchData() {
             try {
-                const response = await axios.get('http://10.1.55.230:7777/history/gets/' + this.$route.query.tagMac);
+                const response = await api.get('/history/gets/' + this.$route.query.tagMac);
                 const data = response.data;
 
                 this.items = data.map(item => ({
