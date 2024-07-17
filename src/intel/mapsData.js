@@ -1,7 +1,7 @@
 // mapsData.js
 export default [
   {
-    imageUrl: require("@/assets/อาคาร Wellnese 9 ชั้น-1.png"),
+    imageUrl: require("@/assets/อาคาร Wellnese 9 ชั้น-1-black-modified.png"),
     imageBounds: [
       [0, 0],
       [1700, 2800],
@@ -94,7 +94,7 @@ export default [
     ],
   },
   {
-    imageUrl: require("@/assets/อาคาร Wellnese 9 ชั้น-2.png"),
+    imageUrl: require("@/assets/อาคาร Wellnese 9 ชั้น-2-modified.png"),
     imageBounds: [
       [0, 0],
       [1700, 2800],
@@ -192,7 +192,7 @@ export default [
   },
   // เพิ่มข้อมูลแผนที่ 3 และ 4
   {
-    imageUrl: require("@/assets/อาคาร Wellnese 9 ชั้น-3.png"),
+    imageUrl: require("@/assets/อาคาร Wellnese 9 ชั้น-3-modified.png"),
     imageBounds: [
       [0, 0],
       [1700, 2800],
@@ -293,7 +293,7 @@ export default [
     ],
   },
   {
-    imageUrl: require("@/assets/อาคาร Wellnese 9 ชั้น-4.png"),
+    imageUrl: require("@/assets/อาคาร Wellnese 9 ชั้น-4-modified.png"),
     imageBounds: [
       [0, 0],
       [1700, 2800],
@@ -342,7 +342,7 @@ export default [
     ],
   },
   {
-    imageUrl: require("@/assets/อาคาร Wellnese 9 ชั้น-5.png"),
+    imageUrl: require("@/assets/อาคาร Wellnese 9 ชั้น-5-modified.png"),
     imageBounds: [
       [0, 0],
       [1700, 2800],
@@ -391,7 +391,7 @@ export default [
     ],
   },
   {
-    imageUrl: require("@/assets/อาคาร Wellnese 9 ชั้น-6.png"),
+    imageUrl: require("@/assets/อาคาร Wellnese 9 ชั้น-6-modified.png"),
     imageBounds: [
       [0, 0],
       [1700, 2800],
@@ -456,7 +456,7 @@ export default [
     ],
   },
   {
-    imageUrl: require("@/assets/อาคาร Wellnese 9 ชั้น-7.png"),
+    imageUrl: require("@/assets/อาคาร Wellnese 9 ชั้น-7-modified.png"),
     imageBounds: [
       [0, 0],
       [1700, 2800],
@@ -501,7 +501,7 @@ export default [
     ],
   },
   {
-    imageUrl: require("@/assets/อาคาร Wellnese 9 ชั้น-8.png"),
+    imageUrl: require("@/assets/อาคาร Wellnese 9 ชั้น-8-modified.png"),
     imageBounds: [
       [0, 0],
       [1700, 2800],
@@ -542,7 +542,7 @@ export default [
     ],
   },
   {
-    imageUrl: require("@/assets/อาคาร Wellnese 9 ชั้น-9.png"),
+    imageUrl: require("@/assets/อาคาร Wellnese 9 ชั้น-9-modified.png"),
     imageBounds: [
       [0, 0],
       [1700, 2800],
