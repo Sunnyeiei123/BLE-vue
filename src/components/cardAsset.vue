@@ -73,18 +73,6 @@ export default {
             currentMapIndex: 1,
             selectedMap: 1, // ตัวแปรสำหรับเก็บข้อมูลแผนที่ที่ถูกเลือก
             maps: mapsData, // ใช้ข้อมูลแผนที่จาก mapsData.js
-            customIcon: L.icon({
-                iconUrl: require('@/assets/green2.png'),
-                iconSize: [24, 24], // ขนาดของ icon
-                iconAnchor: [10, 10], // จุด anchor ของ icon อยู่ตรงกลางของ icon
-                popupAnchor: [0, -10] // จุด anchor ของ popup อยู่ด้านบนของ icon
-            }),
-            customIcon2: L.icon({
-                iconUrl: require('@/assets/black.png'),
-                iconSize: [19, 19], // ขนาดของ icon
-                iconAnchor: [10, 10], // จุด anchor ของ icon อยู่ตรงกลางของ icon
-                popupAnchor: [0, -10] // จุด anchor ของ popup อยู่ด้านบนของ icon
-            }),
             loading: true // เพิ่มตัวแปรสำหรับสถานะการโหลด
         };
     },

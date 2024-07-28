@@ -1,5 +1,7 @@
 <template>
-    <div id="map" style="height: 1000px;"></div>
+    <div>
+        <div id="map" style="height: 1000px;"></div>
+    </div>
 </template>
 
 <script>
@@ -15,19 +17,12 @@ export default {
         currentMapIndex: {
             type: Number,
             required: true
-        },
-        customIcon: {
-            type: Object,
-            required: true
-        },
-        customIcon2: {
-            type: Object,
-            required: true
         }
     },
     data() {
         return {
-            map: null
+            map: null,
+            markerLayers: [],
         };
     },
     mounted() {
@@ -35,7 +30,7 @@ export default {
     },
     watch: {
         currentMapIndex() {
-            this.changeMap(this.currentMapIndex);
+            this.changeMap();
         }
     },
     methods: {
@@ -59,21 +54,32 @@ export default {
         },
         async addMarkers(markers) {
             const tagMacs = await this.fetchTagMacs();
-            console.log("tagMacs:", tagMacs); // เพิ่ม log เพื่อดู tagMacs
+            console.log(tagMacs);
 
-            markers.forEach(marker => {
-                const popupText = this.generatePopupText(marker.popupText, tagMacs);
-                console.log("Adding marker:", marker.position, popupText); // เพิ่ม log เพื่อดู marker details
-
-                const apNumber = marker.popupText.split(' ')[1].padStart(3, '0'); // ดึงเฉพาะหมายเลข AP และ pad ให้ครบ 3 หลัก
+            this.markerLayers = markers.map((marker) => {
+                const apNumber = marker.popupText.split(' ')[1].padStart(3, '0');
                 const hasTagMac = Object.keys(tagMacs).some(key => key.endsWith(`-AP${apNumber}`));
 
-                L.marker(marker.position, {
-                    icon: hasTagMac ? this.customIcon : this.customIcon2
-                })
-                    .addTo(this.map)
-                    .bindPopup(popupText);
-            });
+                if (hasTagMac) {
+                    const popupText = this.generatePopupText(marker.popupText, tagMacs);
+
+                    let iconKey = 'Other';
+                    for (const key in tagMacs) {
+                        if (key.endsWith(`-AP${apNumber}`)) {
+                            iconKey = tagMacs[key][2] || 'Other'; // Assuming assetType is the third item in the array
+                            break;
+                        }
+                    }
+                    const icon = this.getIcon(iconKey);
+
+                    const markerLayer = L.marker(marker.position, { icon }).bindPopup(popupText);
+                    markerLayer.addTo(this.map);
+                    return {
+                        layer: markerLayer,
+                        visible: true
+                    };
+                }
+            }).filter(layer => layer !== undefined);
         },
         async fetchTagMacs() {
             try {
@@ -83,7 +89,7 @@ export default {
                     if (!acc[locationKey]) {
                         acc[locationKey] = [];
                     }
-                    acc[locationKey].push(item.tagMac);
+                    acc[locationKey].push(item.tagMac, item.assetName, item.assetType);
                     return acc;
                 }, {});
             } catch (error) {
@@ -92,25 +98,45 @@ export default {
             }
         },
         generatePopupText(popupText, tagMacs) {
-            const apNumber = popupText.split(' ')[1].padStart(3, '0'); // ดึงเฉพาะหมายเลข AP และ pad ให้ครบ 3 หลัก
+            const apNumber = popupText.split(' ')[1].padStart(3, '0');
             let tagMacsForAP = [];
-
             for (const key in tagMacs) {
-                if (key.endsWith(`-AP${apNumber}`)) { // ตรวจสอบเฉพาะส่วนที่เป็นหมายเลข AP
+                if (key.endsWith(`-AP${apNumber}`)) {
                     tagMacsForAP = tagMacs[key];
                     break;
                 }
             }
 
-            const tagMacsText = tagMacsForAP.length > 0 ? tagMacsForAP.map(tagMac => `TagMac: ${tagMac}`).join('<br>') : 'No tagMac found';
-            console.log("popupText:", popupText); // Log popupText
-            console.log("tagMacsForAP:", tagMacsForAP); // Log tagMacsForAP
-            return `${popupText}<br>${tagMacsText}`;
+            const assetInfoText = tagMacsForAP.length > 0
+                ? `Asset Name: ${tagMacsForAP[1] || 'Unknown'}<br>
+                   Asset Type: ${tagMacsForAP[2] || 'Unknown'}<br>
+                   Tag MAC: ${tagMacsForAP[0] || 'Unknown'}`
+                : 'No assets found';
+
+            return `${popupText}<br>${assetInfoText}`;
         },
-        changeMap(mapIndex) {
-            this.map.remove();
+        getIcon(iconKey) {
+            const iconMapping = {
+                'Medical Equipment': 'ME.png',
+                'Computer Equipment': 'CE.png',
+                'General Equipment': 'Alone.png',
+                'Other': 'Other.png',
+            };
+
+            const iconFileName = iconMapping[iconKey] || 'Other.png';
+            return L.icon({
+                iconUrl: require(`@/assets/${iconFileName}`),
+                iconSize: [24, 24],
+                iconAnchor: [12, 12],
+                popupAnchor: [0, -12]
+            });
+        },
+        changeMap() {
+            if (this.map) {
+                this.map.remove();
+            }
             this.initMap();
-        }
+        },
     }
 };
 </script>
