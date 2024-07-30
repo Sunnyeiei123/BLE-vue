@@ -56,30 +56,33 @@ export default {
             const tagMacs = await this.fetchTagMacs();
             console.log(tagMacs);
 
-            this.markerLayers = markers.map((marker) => {
-                const apNumber = marker.popupText.split(' ')[1].padStart(3, '0');
-                const hasTagMac = Object.keys(tagMacs).some(key => key.endsWith(`-AP${apNumber}`));
+            this.markerLayers = [];
 
-                if (hasTagMac) {
-                    const popupText = this.generatePopupText(marker.popupText, tagMacs);
+            markers.forEach((marker) => {
+                const apNumber = marker.popupText.split(' ')[1];
+                const assetsAtMarker = tagMacs[`Wellness-FL03-AP0${apNumber}`] || [];
 
-                    let iconKey = 'Other';
-                    for (const key in tagMacs) {
-                        if (key.endsWith(`-AP${apNumber}`)) {
-                            iconKey = tagMacs[key][2] || 'Other'; // Assuming assetType is the third item in the array
-                            break;
-                        }
-                    }
-                    const icon = this.getIcon(iconKey);
+                if (assetsAtMarker.length > 0) {
+                    assetsAtMarker.forEach((asset, index) => {
+                        const popupText = this.generatePopupText(marker.popupText, asset);
+                        const iconKey = asset[2] || 'Other';
+                        const icon = this.getIcon(iconKey);
 
-                    const markerLayer = L.marker(marker.position, { icon }).bindPopup(popupText);
-                    markerLayer.addTo(this.map);
-                    return {
-                        layer: markerLayer,
-                        visible: true
-                    };
+                        // Calculate offset position for all markers
+                        let position = [...marker.position];
+                        const offset = 25 * index; // Adjust this value to change the spacing
+                        position[0] += offset;
+                        position[1] += offset;
+
+                        const markerLayer = L.marker(position, { icon }).bindPopup(popupText);
+                        markerLayer.addTo(this.map);
+                        this.markerLayers.push({
+                            layer: markerLayer,
+                            visible: true
+                        });
+                    });
                 }
-            }).filter(layer => layer !== undefined);
+            });
         },
         async fetchTagMacs() {
             try {
@@ -89,7 +92,7 @@ export default {
                     if (!acc[locationKey]) {
                         acc[locationKey] = [];
                     }
-                    acc[locationKey].push(item.tagMac, item.assetName, item.assetType);
+                    acc[locationKey].push([item.tagMac, item.assetName, item.assetType]);
                     return acc;
                 }, {});
             } catch (error) {
@@ -97,20 +100,11 @@ export default {
                 return {};
             }
         },
-        generatePopupText(popupText, tagMacs) {
-            const apNumber = popupText.split(' ')[1].padStart(3, '0');
-            let tagMacsForAP = [];
-            for (const key in tagMacs) {
-                if (key.endsWith(`-AP${apNumber}`)) {
-                    tagMacsForAP = tagMacs[key];
-                    break;
-                }
-            }
-
-            const assetInfoText = tagMacsForAP.length > 0
-                ? `Asset Name: ${tagMacsForAP[1] || 'Unknown'}<br>
-                   Asset Type: ${tagMacsForAP[2] || 'Unknown'}<br>
-                   Tag MAC: ${tagMacsForAP[0] || 'Unknown'}`
+        generatePopupText(popupText, asset) {
+            const assetInfoText = asset
+                ? `Asset Name: ${asset[1] || 'Unknown'}<br>
+           Asset Type: ${asset[2] || 'Unknown'}<br>
+           Tag MAC: ${asset[0] || 'Unknown'}`
                 : 'No assets found';
 
             return `${popupText}<br>${assetInfoText}`;
