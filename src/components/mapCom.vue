@@ -70,7 +70,7 @@ export default {
 
                         // Calculate offset position for all markers
                         let position = [...marker.position];
-                        const offset = 25 * index; // Adjust this value to change the spacing
+                        const offset = 10 * index; // Adjust this value to change the spacing
                         position[0] += offset;
                         position[1] += offset;
 
